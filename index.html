@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Status with Time/Date Options</title>
+  <style>
+    body {
+      background-color: lightskyblue;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+
+    .user-row {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 15px;
+    }
+
+    .user-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .user-name {
+      width: 100px;
+      font-size: 18px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .user-button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+      opacity: 0.9;
+    }
+
+    .user-button:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    .at-work {
+      background-color: #90ee90; /* Light green */
+      color: black;
+    }
+
+    .working-home {
+      background-color: #006400; /* Dark green */
+    }
+
+    .in-meeting {
+      background-color: #800080; /* Purple */
+    }
+
+    .on-holiday {
+      background-color: #555555; /* Dark grey */
+    }
+
+    .active {
+      box-shadow: 0 0 10px white;
+      outline: 2px solid white;
+    }
+
+    .input-group {
+      display: none;
+      margin-top: 10px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .input-group label {
+      font-size: 14px;
+    }
+
+    .input-group input {
+      background-color: #222;
+      border: 1px solid #666;
+      color: white;
+      border-radius: 5px;
+      padding: 4px 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="user-list"></div>
+
+  <script>
+    const userList = document.getElementById('user-list');
+
+    for (let i = 1; i <= 10; i++) {
+      const row = document.createElement('div');
+      row.className = 'user-row';
+
+      const header = document.createElement('div');
+      header.className = 'user-header';
+
+      const name = document.createElement('div');
+      name.className = 'user-name';
+      name.textContent = `User ${i}`;
+
+      const buttonGroup = document.createElement('div');
+      buttonGroup.className = 'button-group';
+
+      const inputGroup = document.createElement('div');
+      inputGroup.className = 'input-group';
+
+      // Meeting Time Inputs
+      const timeStartLabel = document.createElement('label');
+      timeStartLabel.textContent = 'Start Time: ';
+      const timeStartInput = document.createElement('input');
+      timeStartInput.type = 'time';
+
+      const timeEndLabel = document.createElement('label');
+      timeEndLabel.textContent = 'End Time: ';
+      const timeEndInput = document.createElement('input');
+      timeEndInput.type = 'time';
+
+      // Holiday Date Inputs
+      const dateStartLabel = document.createElement('label');
+      dateStartLabel.textContent = 'Start Date: ';
+      const dateStartInput = document.createElement('input');
+      dateStartInput.type = 'date';
+
+      const dateEndLabel = document.createElement('label');
+      dateEndLabel.textContent = 'End Date: ';
+      const dateEndInput = document.createElement('input');
+      dateEndInput.type = 'date';
+
+      inputGroup.append(
+        timeStartLabel, timeStartInput,
+        timeEndLabel, timeEndInput,
+        dateStartLabel, dateStartInput,
+        dateEndLabel, dateEndInput
+      );
+
+      const statuses = [
+        { class: 'at-work', label: 'At Work' },
+        { class: 'working-home', label: 'Working at Home' },
+        { class: 'in-meeting', label: 'In Meeting' },
+        { class: 'on-holiday', label: 'On Holiday' }
+      ];
+
+      statuses.forEach(status => {
+        const btn = document.createElement('button');
+        btn.className = `user-button ${status.class}`;
+        btn.textContent = status.label;
+
+        btn.addEventListener('click', () => {
+          // Reset button states
+          buttonGroup.querySelectorAll('.user-button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          // Hide all inputs initially
+          inputGroup.style.display = 'none';
+          [timeStartInput, timeEndInput, dateStartInput, dateEndInput].forEach(input => input.style.display = 'none');
+          [timeStartLabel, timeEndLabel, dateStartLabel, dateEndLabel].forEach(label => label.style.display = 'none');
+
+          // Show relevant inputs
+          if (status.class === 'in-meeting') {
+            inputGroup.style.display = 'flex';
+            timeStartInput.style.display = 'inline-block';
+            timeEndInput.style.display = 'inline-block';
+            timeStartLabel.style.display = 'inline-block';
+            timeEndLabel.style.display = 'inline-block';
+          } else if (status.class === 'on-holiday') {
+            inputGroup.style.display = 'flex';
+            dateStartInput.style.display = 'inline-block';
+            dateEndInput.style.display = 'inline-block';
+            dateStartLabel.style.display = 'inline-block';
+            dateEndLabel.style.display = 'inline-block';
+          } else {
+            // Clear values if switching away
+            [timeStartInput, timeEndInput, dateStartInput, dateEndInput].forEach(input => input.value = '');
+          }
+        });
+
+        buttonGroup.appendChild(btn);
+      });
+
+      header.appendChild(name);
+      header.appendChild(buttonGroup);
+      row.appendChild(header);
+      row.appendChild(inputGroup);
+      userList.appendChild(row);
+    }
+  </script>
+
+</body>
+</html>
